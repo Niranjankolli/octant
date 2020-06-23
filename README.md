@@ -1,5 +1,5 @@
 # octant
-VMware Tanzu octant deployment yaml file
+
 Octant is web-based UI to monitor the kubernetes workloads.
 
 The yamsl are straight forward download and deploy in the namespace. 
