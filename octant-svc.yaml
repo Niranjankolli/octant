@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: octant-svc
+spec:
+  type: NodePort
+  ports:
+  - name: ui
+    port: 7777
+    targetPort: 7777
+    nodePort: 32007
+    protocol: TCP
+  selector:
+    app: octant
