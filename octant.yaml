@@ -1,0 +1,49 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: octant
+  labels:
+    app: octant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: octant
+  template:
+    metadata:
+      labels:
+        app: octant
+    spec:
+      containers:
+        - name: octant
+          image: alpine:3.8
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+          args:
+          - -c
+          - ARCHIVE=`mktemp`;wget -O $ARCHIVE "https://github.com/vmware-tanzu/octant/releases/download/v$OCTANT_VERSION/octant_${OCTANT_VERSION}_Linux-64bit.tar.gz";tar -xzvf $ARCHIVE -C /opt/octant;/opt/octant/octant_${OCTANT_VERSION}_Linux-64bit/octant
+          env:
+            - name: KUBECONFIG
+              value: /opt/admin.conf
+            - name: OCTANT_VERSION
+              value: 0.13.1
+            - name: OCTANT_LISTENER_ADDR
+              value: "0.0.0.0:7777"
+            - name: OCTANT_DISABLE_OPEN_BROWSER
+              value: "1"
+          ports:
+            - name: octant-port
+              containerPort: 7777
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /opt
+              name: k8config
+            - mountPath: /opt/octant
+              name: path
+      volumes:
+        - name: k8config
+          configMap:
+            name: k8config
+        - name: path
+          emptyDir: {}
